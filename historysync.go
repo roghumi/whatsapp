@@ -148,14 +148,16 @@ func (user *User) createOrUpdatePortalAndBackfillWithLock(req *database.Backfill
 			if len(msgs) > 0 {
 				time.Sleep(time.Duration(req.BatchDelay) * time.Second)
 				user.log.Debugf("Backfilling %d messages in %s", len(msgs), portal.Key.JID)
-				insertionEventIds = append(insertionEventIds, portal.backfill(user, msgs)...)
+				if len(insertionEventIds) == 0 {
+					insertionEventIds = portal.backfill(user, msgs)
+				}
 			}
 		}
 		user.log.Debugf("Finished backfilling %d messages in %s", len(allMsgs), portal.Key.JID)
-		if len(insertionEventIds) > 0 {
+		for _, insertionEventID := range insertionEventIds {
 			portal.sendPostBackfillDummy(
 				time.Unix(int64(allMsgs[len(allMsgs)-1].GetMessageTimestamp()), 0),
-				insertionEventIds[0])
+				insertionEventID)
 		}
 		user.log.Debugf("Deleting %d history sync messages after backfilling", len(allMsgs))
 		err := user.bridge.DB.HistorySyncQuery.DeleteMessages(user.MXID, conv.ConversationID, allMsgs)
