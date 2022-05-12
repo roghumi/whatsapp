@@ -279,7 +279,7 @@ func (puppet *Puppet) updatePortalAvatar() {
 		}
 		portal.AvatarURL = puppet.AvatarURL
 		portal.Avatar = puppet.Avatar
-		portal.Update()
+		portal.Update(nil)
 	})
 }
 
@@ -292,7 +292,7 @@ func (puppet *Puppet) updatePortalName() {
 			}
 		}
 		portal.Name = puppet.Displayname
-		portal.Update()
+		portal.Update(nil)
 	})
 }
 
