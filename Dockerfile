@@ -4,7 +4,7 @@ RUN apk add --no-cache git ca-certificates build-base su-exec olm-dev
 
 COPY . /build
 WORKDIR /build
-RUN go build -o /usr/bin/mautrix-whatsapp
+RUN go build -buildvcs=false -o /usr/bin/mautrix-whatsapp
 
 FROM alpine:3.15
 
